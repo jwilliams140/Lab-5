@@ -14,6 +14,13 @@ export default function App() {
   const firstNames = ['Joshua', 'Margaret', 'Alexander', 'Holy'];
   const lastNames = ['Williams', 'Roberts', 'Smith', 'Bellinger'];
 
+  const [pumps, setPumps] = useState([
+    { id: 1, value: 50, direction: 1, total: 0 }
+    { id: 2, value: 25, direction: 1, total: 0 }
+  ]);
+  const [count, setCount] = useState('');
+
+
   useEffect(() => {
     const interval = setInterval(() => {
       setStocks(prev =>
@@ -25,6 +32,22 @@ export default function App() {
       );
     }, 1000);
     return () => clearInterval(interval);
+  }, []);
+
+    useEffect(() => {
+    const pumpInterval = setInterval(() => {
+      setPumps(pump =>
+        prev.map(stock => {
+          let newValue = pump.value + pump.direction * 5;
+          let newDirection = pumpdirection;
+
+          if (newValue >= 100) newDirection = -1;
+          if (newValue <= 0) newDirection = 1;
+          return { ...pump, value: newValue, total: pump.total + Math.abs(newValue) };
+        })
+      );
+    }, 1000);
+    return () => clearInterval(pumpInterval);
   }, []);
 
   const generateNames = () => {
@@ -95,6 +118,19 @@ export default function App() {
       ))}
       </View>
       )}
+
+    {screen === 'oil' && (
+    <View>
+      <Text style = {{ fontSize: 22, marginVertical: 10 }}> Oil Pump Monitor</Text>
+
+      {pumps.map(pump  => (
+        <Text key = {pump.id}>
+          Pump {pump.id}: {pump.value} | Total:{' '}
+          {pump.total}
+        </Text>
+      ))}
+    </View>
+  )}
       </ScrollView>
   );
 }
